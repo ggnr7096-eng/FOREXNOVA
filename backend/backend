@@ -1,0 +1,562 @@
+require("dotenv").config()
+
+const express = require("express")
+const mongoose = require("mongoose")
+const cors = require("cors")
+const bcrypt = require("bcryptjs")
+
+const app = express()
+
+app.use(cors())
+app.use(express.json())
+
+/* =========================
+   DATABASE
+========================= */
+
+mongoose.connect(process.env.MONGO_URI)
+
+.then(() => {
+
+  console.log("MongoDB Connected")
+
+})
+
+.catch(err => {
+
+  console.log(err)
+
+})
+
+/* =========================
+   USER MODEL
+========================= */
+
+const UserSchema =
+  new mongoose.Schema({
+
+    email: {
+      type: String,
+      unique: true
+    },
+
+    password: String,
+
+    balance: {
+      type: Number,
+      default: 10000
+    },
+
+    transactions: [
+
+      {
+
+        type: {
+          type: String
+        },
+
+        amount: Number,
+
+        status: String,
+
+        date: {
+
+          type: Date,
+
+          default: Date.now
+
+        }
+
+      }
+
+    ]
+
+  })
+
+const User =
+  mongoose.model(
+    "User",
+    UserSchema
+  )
+
+/* =========================
+   HOME
+========================= */
+
+app.get("/", (req, res) => {
+
+  res.json({
+
+    message:
+      "FOREXNOVA API Running"
+
+  })
+
+})
+
+/* =========================
+   REGISTER
+========================= */
+
+app.post(
+
+  "/api/auth/register",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        password
+      } = req.body
+
+      const existing =
+        await User.findOne({
+          email
+        })
+
+      if (existing) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "User already exists"
+
+        })
+
+      }
+
+      const hashed =
+        await bcrypt.hash(
+          password,
+          10
+        )
+
+      await User.create({
+
+        email,
+
+        password:
+          hashed,
+
+        balance: 10000
+
+      })
+
+      res.json({
+
+        success: true,
+
+        message:
+          "Account created"
+
+      })
+
+    }
+
+    catch {
+
+      res.json({
+
+        success: false,
+
+        message:
+          "Registration failed"
+
+      })
+
+    }
+
+  }
+
+)
+
+/* =========================
+   LOGIN
+========================= */
+
+app.post(
+
+  "/api/auth/login",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        password
+      } = req.body
+
+      const user =
+        await User.findOne({
+          email
+        })
+
+      if (!user) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "User not found"
+
+        })
+
+      }
+
+      const valid =
+        await bcrypt.compare(
+          password,
+          user.password
+        )
+
+      if (!valid) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "Wrong password"
+
+        })
+
+      }
+
+      res.json({
+
+        success: true,
+
+        user: {
+
+          email:
+            user.email,
+
+          balance:
+            user.balance,
+
+          transactions:
+            user.transactions
+
+        }
+
+      })
+
+    }
+
+    catch {
+
+      res.json({
+
+        success: false,
+
+        message:
+          "Login failed"
+
+      })
+
+    }
+
+  }
+
+)
+
+/* =========================
+   INVEST
+========================= */
+
+app.post(
+
+  "/api/invest",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        amount
+      } = req.body
+
+      const user =
+        await User.findOne({
+          email
+        })
+
+      if (!user) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "User not found"
+
+        })
+
+      }
+
+      if (
+        user.balance <
+        amount
+      ) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "Insufficient balance"
+
+        })
+
+      }
+
+      user.balance -= amount
+
+      user.transactions.push({
+
+        type:
+          "Investment",
+
+        amount,
+
+        status:
+          "Completed"
+
+      })
+
+      await user.save()
+
+      res.json({
+
+        success: true,
+
+        balance:
+          user.balance,
+
+        transactions:
+          user.transactions
+
+      })
+
+    }
+
+    catch {
+
+      res.json({
+
+        success: false,
+
+        message:
+          "Investment failed"
+
+      })
+
+    }
+
+  }
+
+)
+
+/* =========================
+   DEPOSIT
+========================= */
+
+app.post(
+
+  "/api/deposit",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        amount
+      } = req.body
+
+      const user =
+        await User.findOne({
+          email
+        })
+
+      if (!user) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "User not found"
+
+        })
+
+      }
+
+      user.balance += amount
+
+      user.transactions.push({
+
+        type:
+          "Deposit",
+
+        amount,
+
+        status:
+          "Completed"
+
+      })
+
+      await user.save()
+
+      res.json({
+
+        success: true,
+
+        balance:
+          user.balance,
+
+        transactions:
+          user.transactions
+
+      })
+
+    }
+
+    catch {
+
+      res.json({
+
+        success: false,
+
+        message:
+          "Deposit failed"
+
+      })
+
+    }
+
+  }
+
+)
+
+/* =========================
+   WITHDRAW
+========================= */
+
+app.post(
+
+  "/api/withdraw",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        amount
+      } = req.body
+
+      const user =
+        await User.findOne({
+          email
+        })
+
+      if (!user) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "User not found"
+
+        })
+
+      }
+
+      if (
+        user.balance <
+        amount
+      ) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "Insufficient balance"
+        })
+
+      }
+
+      user.balance -= amount
+
+      user.transactions.push({
+
+        type:
+          "Withdrawal",
+
+        amount,
+
+        status:
+          "Completed"
+
+      })
+
+      await user.save()
+
+      res.json({
+
+        success: true,
+
+        balance:
+          user.balance,
+
+        transactions:
+          user.transactions
+
+      })
+
+    }
+
+    catch {
+
+      res.json({
+
+        success: false,
+
+        message:
+          "Withdrawal failed"
+
+      })
+
+    }
+
+  }
+
+)
+
+/* =========================
+   SERVER
+========================= */
+
+app.listen(
+
+  5000,
+
+  () => {
+
+    console.log(
+      "Server running on port 5000"
+    )
+
+  }
+
+)
