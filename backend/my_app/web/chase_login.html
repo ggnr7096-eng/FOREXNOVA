@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chase Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #081a2e;
+      color: #0f172a;
+    }
+
+    .background-container {
+      background-image: url('https://static.chasecdn.com/content/dam/unified-assets/backgrounds/hero-cityscape-dusk.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+    }
+
+    .page-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+
+    .login-card {
+      width: min(100%, 420px);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .login-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+      background-size: 14px 14px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-header {
+      padding: 32px 32px 24px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .logo-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #005eb8;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-mark svg {
+      width: 20px;
+      height: 20px;
+      transform: rotate(45deg);
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .login-subtitle {
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .form-area {
+      padding: 0 32px 32px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .field-input {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      background: #f8fafc;
+      padding: 15px 16px;
+      color: #0f172a;
+      font-size: 15px;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: #005eb8;
+      background: #ffffff;
+    }
+
+    .password-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .password-toggle {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #005eb8;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .checkbox-group {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #334155;
+      font-size: 14px;
+    }
+
+    .checkbox-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: #005eb8;
+    }
+
+    .button-group {
+      display: grid;
+      gap: 16px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .button-primary,
+    .button-secondary {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button-primary {
+      background-color: #005eb8;
+      color: #ffffff;
+    }
+
+    .button-primary:hover {
+      background-color: #004a8f;
+    }
+
+    .button-primary:focus-visible,
+    .button-primary:active {
+      outline: 2px solid #005eb8;
+      outline-offset: 2px;
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: #005eb8;
+      border: 1px solid #005eb8;
+    }
+
+    .button-secondary:hover {
+      background: #f0f7ff;
+    }
+
+    .footer-links {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: #0f172a;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+      .login-card {
+        border-radius: 20px;
+      }
+
+      .login-header,
+      .form-area {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .logo-text {
+        font-size: 24px;
+      }
+
+      .login-card {
+        width: min(100%, 100vw - 32px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container"></div>
+  <div class="page-wrap">
+    <article class="login-card">
+      <div class="card-inner">
+        <div class="login-header">
+          <div class="logo-row">
+            <div class="logo-mark">
+              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 50 L35 15 H65 L80 50 L65 85 H35 Z" fill="#ffffff" />
+              </svg>
+            </div>
+            <div class="logo-text">CHASE</div>
+          </div>
+          <p class="login-subtitle">Secure sign in to your account</p>
+        </div>
+        <div class="form-area">
+          <div class="field-group">
+            <label for="username">Username</label>
+            <input id="username" class="field-input" type="text" placeholder="Enter your username" />
+          </div>
+          <div class="field-group">
+            <div class="password-row">
+              <label for="password">Password</label>
+              <button type="button" class="password-toggle">Show</button>
+            </div>
+            <input id="password" class="field-input" type="password" placeholder="Enter your password" />
+          </div>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" /> Remember username</label>
+            <label class="checkbox-item"><input type="checkbox" /> Use token</label>
+          </div>
+          <div class="button-group">
+            <button class="button-primary" id="signin-button" type="button">Sign in</button>
+            <button class="button-secondary" id="passwordless-sign-in" type="button">Passwordless sign in</button>
+          </div>
+          <div class="footer-links">
+            <a href="#">Forgot username/password?</a>
+            <a href="#">Not enrolled? Sign up now.</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

